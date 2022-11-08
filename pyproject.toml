@@ -1,0 +1,35 @@
+[build-system]
+requires = ["setuptools>=42", 
+            "wheel",
+            "setuptools_scm"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "mockserver"
+version = "0.0.1"
+description = "Python generic server implementation, with predefined request-answer pairs and different modes (e.g, 'normal', 'no response', 'fail test1')"
+readme = "README.md"
+authors = [{ name = "Carsten König" }]
+license = { text = "MIT License" }
+classifiers = [
+    "Development Status :: 2 - Pre-Alpha",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Topic :: Software Development",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 2.7",
+    "Programming Language :: Python :: 3",
+    "Operating System :: Unix",
+    "Operating System :: POSIX",
+    "Operating System :: MacOS"
+]
+keywords = ["mock", "testing", "Integration tests", "server", "simulator"]
+dependencies = [
+]
+requires-python = ">=2.7"
+
+[project.urls]
+Homepage = "https://gitlab.com/ck2go/mockserver"
+
+[project.scripts]
+mockserver = "mockserver.__main__:main"
