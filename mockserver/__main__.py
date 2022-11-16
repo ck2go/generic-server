@@ -11,7 +11,14 @@ class MockServer():
                        'tcp': TcpServer()}[protocol]
 
     def run(self):
-        pass
+        self.server.run()
+
+    def stop(self):
+        self.server.stop()
+
+    @property
+    def is_running(self):
+        return self.server.is_running
 
 
 def main():
