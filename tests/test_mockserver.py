@@ -50,6 +50,30 @@ class TestMockServer:
         mock_sock.assert_called_once()
         mock_sock.return_value.recv.assert_called_once()
 
+    def test_udp_reflect(self, mocker):
+        # set up mocks
+        request = 'test'
+        client_addr = ('127.0.0.1', 20001)
+        mock_sock = mocker.patch('mockserver.udpserver.socket.socket')
+        mock_sock.return_value.bind.return_value = 'bound'
+        mock_sock.return_value.setblocking.return_value = None
+        mock_sock.return_value.recv.side_effect = [(request, client_addr),
+                                                    ('MOCKSERVER:STOP', client_addr)]
+        mock_sock.return_value.sendto.return_value = None
+
+
+        mocker.patch("mockserver.udpserver.select.select", return_value=[True, True])
+
+        # run mock server
+        my_server = MockServer()
+        my_server.run()
+
+        mock_sock.assert_called_once()
+        mock_sock.return_value.sendto.assert_called_once_with(str.encode(request), ('127.0.0.1', 20001))
+        assert mock_sock.return_value.recv.call_count == 2
+
+
+
     def test_tcp_run_got_stop(self, mocker):
         # set up mocks
         mock_conn = Mock()
@@ -71,6 +95,7 @@ class TestMockServer:
 
         mock_sock.assert_called_once()
         mock_conn.recv.assert_called_once()
+
 
 
 

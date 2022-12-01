@@ -41,8 +41,9 @@ class UdpServer():
                 print('Waiting for server to stop...')
                 self._run = False
             else:
-                answer = 'ok'
+                answer = self._responder.respondToRequest(message_from_client)
                 print(f'  Sending answer: "{answer}"')
+                print(type(udp_socket.sendto))
                 udp_socket.sendto(str.encode(answer), client_address)
 
         udp_socket.close()
