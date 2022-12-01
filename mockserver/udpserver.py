@@ -15,7 +15,8 @@ def recv_timeout(sock, bytes_to_read, timeout_seconds):
     raise socket.timeout()
 
 class UdpServer():
-    def __init__(self):
+    def __init__(self, responder):
+        self._responder = responder
         self.ip = "127.0.0.1"
         self.port = 20001
         self.buffer_size = 1024

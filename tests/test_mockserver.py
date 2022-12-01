@@ -3,7 +3,8 @@ from __future__ import absolute_import
 # from unittest import TestCase
 from unittest.mock import Mock
 
-from mockserver.__main__ import MockServer
+from mockserver.mockserver import MockServer
+from mockserver.mockresponder import MockResponder
 from mockserver.tcpserver import TcpServer
 from mockserver.udpserver import UdpServer
 
@@ -22,14 +23,16 @@ class TestMockServer:
         pass
 
     def test_init_udpServer(self):
-        my_server = MockServer(protocol='udp')
+        my_server = MockServer(protocol='udp', responder='reflect')
         assert isinstance(my_server, MockServer)
         assert isinstance(my_server.server, UdpServer)
+        assert isinstance(my_server.server._responder, MockResponder)
 
     def test_init_tcpServer(self):
-        my_server = MockServer(protocol='tcp')
+        my_server = MockServer(protocol='tcp', responder='reflect')
         assert isinstance(my_server, MockServer)
         assert isinstance(my_server.server, TcpServer)
+        assert isinstance(my_server.server._responder, MockResponder)
 
     def test_udp_run_got_stop(self, mocker):
         # set up mocks
