@@ -3,13 +3,17 @@
 from __future__ import absolute_import
 from .udpserver import UdpServer
 from .tcpserver import TcpServer
-from .mockresponder import MockResponderReflect
+from .responders.reflector import Reflector
+from .responders.okresponder import OkResponder
+from .responders.manual import ManualResponder
 
 class MockServer():
     def __init__(self, protocol='udp', responder='reflect'):
         server = {'udp': UdpServer,
                   'tcp': TcpServer}[protocol]
-        responders = {'reflect': MockResponderReflect}
+        responders = {'reflect': Reflector,
+                      'ok': OkResponder,
+                      'manual': ManualResponder}
         if responder in responders.keys():
             responder = responders[responder]()
         else:

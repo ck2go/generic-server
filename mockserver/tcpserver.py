@@ -34,7 +34,8 @@ class TcpServer():
                     print('Waiting for server to stop...')
                     self._run = False
                 else:
-                    answer = 'ok'
+
+                    answer = self._responder.respondTo(message_from_client)
                     print(f'  Sending answer: "{answer}"')
                     conn.sendall(answer)
 

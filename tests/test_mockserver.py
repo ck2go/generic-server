@@ -4,7 +4,8 @@ from __future__ import absolute_import
 from unittest.mock import Mock
 
 from mockserver.mockserver import MockServer
-from mockserver.mockresponder import MockResponder
+from mockserver.responders import MockResponder
+from mockserver.responders.reflector import Reflector
 from mockserver.tcpserver import TcpServer
 from mockserver.udpserver import UdpServer
 
@@ -61,7 +62,6 @@ class TestMockServer:
                                                     ('MOCKSERVER:STOP', client_addr)]
         mock_sock.return_value.sendto.return_value = None
 
-
         mocker.patch("mockserver.udpserver.select.select", return_value=[True, True])
 
         # run mock server
@@ -69,10 +69,8 @@ class TestMockServer:
         my_server.run()
 
         mock_sock.assert_called_once()
-        mock_sock.return_value.sendto.assert_called_once_with(str.encode(request), ('127.0.0.1', 20001))
+        mock_sock.return_value.sendto.assert_called_once_with(request, ('127.0.0.1', 20001))
         assert mock_sock.return_value.recv.call_count == 2
-
-
 
     def test_tcp_run_got_stop(self, mocker):
         # set up mocks
@@ -96,6 +94,33 @@ class TestMockServer:
         mock_sock.assert_called_once()
         mock_conn.recv.assert_called_once()
 
+    def test_tcp_reflect(self, mocker):
+        request = 'test'
+        client_addr = ('127.0.0.1', 20001)
+
+        # set up mocks
+        mock_conn = Mock()
+        mock_conn.__enter__ = lambda *args: True
+        mock_conn.__exit__ = lambda *args: True
+        mock_conn.recv.side_effect = [request,
+                                      'MOCKSERVER:STOP']
+        mock_conn.sendall.return_value = None
+
+        mock_sock = mocker.patch('mockserver.udpserver.socket.socket')
+        mock_sock.return_value.bind.return_value = None
+        mock_sock.return_value.listen.return_value = None
+        mock_sock.return_value.setblocking.return_value = None
+        mock_sock.return_value.accept.return_value = (mock_conn, ('127.0.0.1', 20001))
+
+        mocker.patch("mockserver.udpserver.select.select", return_value=[True, True])
+
+        # run mock server
+        my_server = MockServer(protocol='tcp')
+        my_server.run()
+
+        mock_sock.assert_called_once()
+        mock_conn.sendall.assert_called_once_with(request)
+        assert mock_conn.recv.call_count == 2
 
 
 
