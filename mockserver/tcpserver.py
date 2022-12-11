@@ -23,6 +23,7 @@ class TcpServer:
         """
         self._run = True
         tcp_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        tcp_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
         tcp_socket.bind((self.ip, self.port))
         tcp_socket.listen()
         print("TCP server up and listening")
@@ -35,7 +36,7 @@ class TcpServer:
                 message_from_client = conn.recv(self.buffer_size)
                 if not message_from_client:
                     break
-
+                message_from_client = message_from_client.decode()
                 print(f'Message from {client_address}: "{message_from_client}"')
                 if message_from_client == 'MOCKSERVER:STOP':
                     print('Waiting for server to stop...')
@@ -44,7 +45,7 @@ class TcpServer:
 
                     answer = self._responder.respondTo(message_from_client)
                     print(f'  Sending answer: "{answer}"')
-                    conn.sendall(answer)
+                    conn.sendall(str.encode(answer))
 
         tcp_socket.close()
         self.is_running = False

@@ -4,7 +4,7 @@ import select
 import socket
 
 
-def recv_timeout(sock: socket.socket, bytes_to_read: int, timeout_seconds: int) -> tuple[bytes, tuple[str, int]] | None:
+def recv_timeout(sock: socket.socket, bytes_to_read: int, timeout_seconds: int):
     """
     Receive function with timeout.
 
@@ -29,8 +29,7 @@ def recv_timeout(sock: socket.socket, bytes_to_read: int, timeout_seconds: int) 
     sock.setblocking(False)
     ready = select.select([sock], [], [], timeout_seconds)
     if ready[0]:
-        message_from_client, client_address = sock.recv(bytes_to_read)
-        return message_from_client, client_address
+        return sock.recvfrom(bytes_to_read)
 
     raise socket.timeout(f'No data received within {timeout_seconds}.')
 
@@ -68,7 +67,7 @@ class UdpServer:
                 message_from_client, client_address = recv_timeout(udp_socket, self.buffer_size, timeout)
             except socket.timeout:
                 continue
-
+            message_from_client = message_from_client.decode()
             print(f'Message from {client_address}: "{message_from_client}"')
             if message_from_client == 'MOCKSERVER:STOP':
                 print('Waiting for server to stop...')
@@ -77,7 +76,7 @@ class UdpServer:
                 answer = self._responder.respondTo(message_from_client)
                 print(f'  Sending answer: "{answer}"')
                 print(type(udp_socket.sendto))
-                udp_socket.sendto(answer, client_address)
+                udp_socket.sendto(str.encode(answer), client_address)
 
         udp_socket.close()
         self.is_running = False
