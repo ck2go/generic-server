@@ -4,5 +4,20 @@ from . import MockResponder
 
 
 class ManualResponder(MockResponder):
-    def respondTo(self, request):
+    """
+    Responder that waits for a manual answer to a request.
+    """
+    def respondTo(self, request: str) -> str:
+        """
+        Get response to given request.
+
+        Parameters
+        ----------
+        request:
+            The string to be answered.
+
+        Returns
+        -------
+            The response manually given by the user.
+        """
         return input(f"Please enter response to request '{request}': ")

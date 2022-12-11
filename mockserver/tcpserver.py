@@ -1,11 +1,15 @@
-''' TCP Server.'''
+""" TCP Server."""
 
 import socket
-from time import sleep
+
+import mockserver.responders
 
 
-class TcpServer():
-    def __init__(self, responder):
+class TcpServer:
+    """
+    Server to use with TCP protocol.
+    """
+    def __init__(self, responder: mockserver.responders.MockResponder):
         self._responder = responder
         self.ip = "127.0.0.1"
         self.port = 20001
@@ -14,6 +18,9 @@ class TcpServer():
         self._run = False
 
     def run(self):
+        """
+        Start the server.
+        """
         self._run = True
         tcp_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         tcp_socket.bind((self.ip, self.port))

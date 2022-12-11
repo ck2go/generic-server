@@ -1,20 +1,45 @@
-''' UDP Server.'''
+""" UDP Server."""
 
 import select
 import socket
-from time import sleep
-from threading import Thread
 
 
-def recv_timeout(sock, bytes_to_read, timeout_seconds):
-    sock.setblocking(0)
+def recv_timeout(sock: socket.socket, bytes_to_read: int, timeout_seconds: int) -> tuple[bytes, tuple[str, int]] | None:
+    """
+    Receive function with timeout.
+
+    Parameters
+    ----------
+    sock:
+        The socket to receive data from.
+    bytes_to_read:
+        Number of bytes to read per recv.
+    timeout_seconds
+        Timout in seconds before an error is raised.
+
+    Returns
+    -------
+        The data from the socket.
+
+    Raises
+    ______
+    socket.timeout
+        Raised if no data is received from the socket within timeout_seconds.
+    """
+    sock.setblocking(False)
     ready = select.select([sock], [], [], timeout_seconds)
     if ready[0]:
-        return sock.recv(bytes_to_read)
+        message_from_client, client_address = sock.recv(bytes_to_read)
+        return message_from_client, client_address
 
-    raise socket.timeout()
+    raise socket.timeout(f'No data received within {timeout_seconds}.')
 
-class UdpServer():
+
+class UdpServer:
+    """
+    Server to use with UDP protocol.
+    """
+
     def __init__(self, responder):
         self._responder = responder
         self.ip = "127.0.0.1"
@@ -23,10 +48,18 @@ class UdpServer():
         self.is_running = False
         self._run = False
 
-    def run(self, timeout=1):
+    def run(self, timeout: int = 1):
+        """
+        Start the server.
+
+        Parameters
+        ----------
+        timeout
+            Time in seconds within which data must be received.
+        """
         self._run = True
         udp_socket = socket.socket(family=socket.AF_INET, type=socket.SOCK_DGRAM)
-        res = udp_socket.bind((self.ip, self.port))
+        udp_socket.bind((self.ip, self.port))
         print("UDP server up and listening")
         self.is_running = True
 

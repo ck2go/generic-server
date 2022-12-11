@@ -1,14 +1,34 @@
-'''The main MockServer class.'''
+"""The main MockServer class."""
 
 from __future__ import absolute_import
+from typing import Union
+
 from .udpserver import UdpServer
 from .tcpserver import TcpServer
+from .responders import MockResponder
 from .responders.reflector import Reflector
 from .responders.okresponder import OkResponder
 from .responders.manual import ManualResponder
 
-class MockServer():
-    def __init__(self, protocol='udp', responder='reflect'):
+
+class MockServer:
+    """
+    Generic Server e.g. to use as a mock device in an integration test.
+    """
+    def __init__(self,
+                 protocol: str = 'udp',
+                 responder: Union[str, MockResponder] = 'reflect'):
+        """
+        Create a MockServer Object.
+
+        Parameters
+        ----------
+        protocol:
+            The protocol to use, Either 'udp' (default) or 'tcp'.
+        responder:
+            The responder to use. Either one of 'reflect' (default), 'ok', or
+            'manual', or a MockResponder object.
+        """
         server = {'udp': UdpServer,
                   'tcp': TcpServer}[protocol]
         responders = {'reflect': Reflector,
@@ -22,11 +42,24 @@ class MockServer():
         self.server = server(responder=responder)
 
     def run(self):
+        """
+        Start the server.
+        """
         self.server.run()
 
     def stop(self):
+        """
+        Stop the server.
+        """
         self.server.stop()
 
     @property
-    def is_running(self):
+    def is_running(self) -> bool:
+        """
+        Check if the server is running.
+
+        Returns
+        -------
+            True if server is running, False otherwise.
+        """
         return self.server.is_running

@@ -1,9 +1,12 @@
-'''Module to run MockServer.'''
+"""Module to run MockServer."""
 
-from __future__ import absolute_import
 from .mockserver import MockServer
 
+
 def main():
+    """
+    Starts the MockServer.
+    """
     my_server = MockServer()
     my_server.run()
 
