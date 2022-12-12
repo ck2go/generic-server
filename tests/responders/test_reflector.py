@@ -1,5 +1,5 @@
 """Tests for the Reflector."""
-from mockserver.responders.reflector import Reflector
+from genericserver.responders.reflector import Reflector
 
 
 def test_reflect():

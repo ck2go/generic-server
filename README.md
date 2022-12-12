@@ -12,14 +12,14 @@ In order to test different network components in a lab environment, some compone
 ## Installation
 
 ```bash
-pip install mockserver # not yet published
+pip install generic-server # not yet published
 ```
 
 ## How to use
 In order to start a MockServer, start the server with the desired config:
 
 ```bash
-mockserver <config-file>
+generic-server <config-file>
 ```
 The config-file is a simple yaml file that contains the modes and request-answer pairs.
 

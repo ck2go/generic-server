@@ -1,5 +1,5 @@
 """Test okresponder."""
-from mockserver.responders.okresponder import OkResponder
+from genericserver.responders.okresponder import OkResponder
 
 
 def test_response():

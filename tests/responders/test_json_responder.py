@@ -1,7 +1,7 @@
 """Test the JSON responder class."""
 
 import pytest
-from mockserver.responders.json_responder import JsonResponder
+from genericserver.responders.json_responder import JsonResponder
 
 
 @pytest.fixture(autouse=True)

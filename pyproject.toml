@@ -7,7 +7,7 @@ requires = ["pytest",
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "mockserver"
+name = "generic-server"
 version = "0.0.1"
 description = "Python generic server implementation, with predefined request-answer pairs and different modes (e.g, 'normal', 'no response', 'fail test1')"
 readme = "README.md"
@@ -30,7 +30,7 @@ dependencies = [
 requires-python = ">=3.10"
 
 [project.urls]
-Homepage = "https://gitlab.com/ck2go/mockserver"
+Homepage = "https://gitlab.com/ck2go/generic-server"
 
 [project.scripts]
-mockserver = "mockserver.__main__:main"
+genericserver = "genericserver.__main__:main"

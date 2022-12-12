@@ -1,5 +1,5 @@
 """Test ManualResponder."""
-from mockserver.responders.manual import ManualResponder
+from genericserver.responders.manual import ManualResponder
 
 
 def test_reflect(mocker):

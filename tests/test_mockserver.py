@@ -2,10 +2,10 @@
 from unittest.mock import Mock
 import socket
 
-from mockserver.mockserver import MockServer
-from mockserver.responders import MockResponder
-from mockserver.tcpserver import TcpServer
-from mockserver.udpserver import UdpServer
+from genericserver.mockserver import MockServer
+from genericserver.responders import MockResponder
+from genericserver.tcpserver import TcpServer
+from genericserver.udpserver import UdpServer
 
 
 def test_init_udpServer():
@@ -24,12 +24,12 @@ def test_init_tcpServer():
 
 def test_udp_run_got_stop(mocker):
     # set up mocks
-    mock_sock = mocker.patch('mockserver.udpserver.socket.socket')
+    mock_sock = mocker.patch('genericserver.udpserver.socket.socket')
     mock_sock.return_value.bind.return_value = 'bound'
     mock_sock.return_value.setblocking.return_value = None
     mock_sock.return_value.recvfrom.return_value = (str.encode('MOCKSERVER:STOP'), ('127.0.0.1', 20001))
 
-    mocker.patch("mockserver.udpserver.select.select", return_value=[True, True])
+    mocker.patch("genericserver.udpserver.select.select", return_value=[True, True])
 
     # run mock server
     my_server = MockServer()
@@ -43,14 +43,14 @@ def test_udp_reflect(mocker):
     # set up mocks
     request = str.encode('test')
     client_addr = ('127.0.0.1', 20001)
-    mock_sock = mocker.patch("mockserver.udpserver.socket.socket")
+    mock_sock = mocker.patch("genericserver.udpserver.socket.socket")
     mock_sock.return_value.bind.return_value = 'bound'
     mock_sock.return_value.setblocking.return_value = None
     mock_sock.return_value.recvfrom.side_effect = [(request, client_addr),
                                                    (str.encode('MOCKSERVER:STOP'), client_addr)]
     mock_sock.return_value.sendto.return_value = None
 
-    mocker.patch("mockserver.udpserver.select.select", return_value=[True, True])
+    mocker.patch("genericserver.udpserver.select.select", return_value=[True, True])
 
     # run mock server
     my_server = MockServer()
@@ -68,14 +68,14 @@ def test_tcp_run_got_stop(mocker):
     mock_conn.__exit__ = lambda *args: True
     mock_conn.recv.return_value = str.encode('MOCKSERVER:STOP')
 
-    mock_sock = mocker.patch('mockserver.udpserver.socket.socket')
+    mock_sock = mocker.patch('genericserver.udpserver.socket.socket')
     mock_sock.return_value.setsockopt.return_value = None
     mock_sock.return_value.bind.return_value = None
     mock_sock.return_value.listen.return_value = None
     mock_sock.return_value.setblocking.return_value = None
     mock_sock.return_value.accept.return_value = (mock_conn, ('127.0.0.1', 20001))
 
-    mocker.patch("mockserver.udpserver.select.select", return_value=[True, True])
+    mocker.patch("genericserver.udpserver.select.select", return_value=[True, True])
 
     # run mock server
     my_server = MockServer(protocol='tcp')
@@ -98,14 +98,14 @@ def test_tcp_reflect(mocker):
                                   str.encode('MOCKSERVER:STOP')]
     mock_conn.sendall.return_value = None
 
-    mock_sock = mocker.patch('mockserver.udpserver.socket.socket')
+    mock_sock = mocker.patch('genericserver.udpserver.socket.socket')
     mock_sock.return_value.setsockopt.return_value = None
     mock_sock.return_value.bind.return_value = None
     mock_sock.return_value.listen.return_value = None
     mock_sock.return_value.setblocking.return_value = None
     mock_sock.return_value.accept.return_value = (mock_conn, client_addr)
 
-    mocker.patch("mockserver.udpserver.select.select", return_value=[True, True])
+    mocker.patch("genericserver.udpserver.select.select", return_value=[True, True])
 
     # run mock server
     my_server = MockServer(protocol='tcp')
