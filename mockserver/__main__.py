@@ -17,7 +17,6 @@ def main():
     Starts the MockServer.
     """
     args = getCommandlineArguments()
-
     my_server = MockServer(protocol=args.protocol, responder=args.responder)
     my_server.run()
 

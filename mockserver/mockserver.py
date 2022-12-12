@@ -9,6 +9,7 @@ from .responders import MockResponder
 from .responders.reflector import Reflector
 from .responders.okresponder import OkResponder
 from .responders.manual import ManualResponder
+from .responders.json_responder import JsonResponder
 
 
 class MockServer:
@@ -31,11 +32,20 @@ class MockServer:
         """
         server = {'udp': UdpServer,
                   'tcp': TcpServer}[protocol]
+
+        if ".json" in responder:
+            json_filename = responder
+            responder = 'json'
+
         responders = {'reflect': Reflector,
                       'ok': OkResponder,
-                      'manual': ManualResponder}
+                      'manual': ManualResponder,
+                      'json': JsonResponder}
         if responder in responders.keys():
-            responder = responders[responder]()
+            if responder == 'json':
+                responder = responders[responder](json_filename)
+            else:
+                responder = responders[responder]()
         else:
             keys = str(list(responders.keys()))
             raise NotImplemented("Responder can't be any other type than string yet. Should be one of %s." % keys)
