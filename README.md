@@ -1,6 +1,6 @@
-# MockServer
+# Generic-Server
 
-Python generic server implementation, with predefined request-answer pairs and different answering modes (e.g, 'normal', 'no response', 'fail test1').
+Python generic server implementation, with configurable request-response modes (e.g, 'ok', 'reflect', 'json').
 
 **Status:**  Pre-Alpha (early development)
 **Authors:** Carsten König
@@ -19,7 +19,7 @@ pip install generic-server # not yet published
 In order to start a MockServer, start the server with the desired config:
 
 ```bash
-generic-server <config-file>
+genericserver <protocol> <responder>
 ```
 The config-file is a simple yaml file that contains the modes and request-answer pairs.
 
